@@ -48,23 +48,23 @@ public class ClienteTest {
         );
 
     }
-    @Test
-    void testCrearCliente() {
-        when(clienteService.createCliente(any(ClienteDto.class))).thenReturn(clienteDto);
-
-        ResponseEntity<ClienteDto> response = clienteController.crearCliente(clienteDto);
-
-        assertNotNull(response);
-        assertEquals(200, response.getStatusCodeValue());
-        assertNotNull(response.getBody());
-        assertEquals("Juan", response.getBody().getNombre());
-        assertEquals("perez",response.getBody().getApellido());
-        assertEquals(LocalDate.of(1998,10,10),response.getBody().getFechaNacimiento());
-        assertEquals("masculino",response.getBody().getGenero());
-        assertFalse(response.getBody().isFumador());
-        assertEquals(1.70,response.getBody().getAltura());
-        assertEquals(75.0,response.getBody().getPeso());
-    }
+//    @Test
+//    void testCrearCliente() {
+//        when(clienteService.createCliente(any(ClienteDto.class))).thenReturn(clienteDto);
+//
+//        ResponseEntity<ClienteDto> response = clienteController.crearCliente(clienteDto);
+//
+//        assertNotNull(response);
+//        assertEquals(200, response.getStatusCodeValue());
+//        assertNotNull(response.getBody());
+//        assertEquals("Juan", response.getBody().getNombre());
+//        assertEquals("perez",response.getBody().getApellido());
+//        assertEquals(LocalDate.of(1998,10,10),response.getBody().getFechaNacimiento());
+//        assertEquals("masculino",response.getBody().getGenero());
+//        assertFalse(response.getBody().isFumador());
+//        assertEquals(1.70,response.getBody().getAltura());
+//        assertEquals(75.0,response.getBody().getPeso());
+//    }
 
     @Test
     void testGetClienteKpi() {

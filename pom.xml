@@ -171,12 +171,6 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
-                    <compilerArgs>
-                        <arg>--enable-preview</arg>
-                        <arg>--release</arg>
-                        <arg>17</arg>
-                        <arg>-parameters</arg>
-                    </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
