@@ -4,7 +4,9 @@ import com.technicaltestpinapp.controller.ClienteController;
 import com.technicaltestpinapp.dto.ClienteDto;
 import com.technicaltestpinapp.dto.ClienteResponseKpi;
 import com.technicaltestpinapp.dto.ClienteResponseMuerte;
+import com.technicaltestpinapp.exception.ServiceException;
 import com.technicaltestpinapp.service.impl.ClienteServiceImpl;
+import com.technicaltestpinapp.service.kafka.KafkaProducerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,14 +23,16 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ClienteTest {
 
     @Mock
     private ClienteServiceImpl clienteService;
+
+    @Mock
+    private KafkaProducerService kafkaProducerService;
 
     @InjectMocks
     private ClienteController clienteController;
@@ -48,23 +52,25 @@ public class ClienteTest {
         );
 
     }
-//    @Test
-//    void testCrearCliente() {
-//        when(clienteService.createCliente(any(ClienteDto.class))).thenReturn(clienteDto);
-//
-//        ResponseEntity<ClienteDto> response = clienteController.crearCliente(clienteDto);
-//
-//        assertNotNull(response);
-//        assertEquals(200, response.getStatusCodeValue());
-//        assertNotNull(response.getBody());
-//        assertEquals("Juan", response.getBody().getNombre());
-//        assertEquals("perez",response.getBody().getApellido());
-//        assertEquals(LocalDate.of(1998,10,10),response.getBody().getFechaNacimiento());
-//        assertEquals("masculino",response.getBody().getGenero());
-//        assertFalse(response.getBody().isFumador());
-//        assertEquals(1.70,response.getBody().getAltura());
-//        assertEquals(75.0,response.getBody().getPeso());
-//    }
+    @Test
+    void testCrearCliente() {
+        when(clienteService.createCliente(any(ClienteDto.class))).thenReturn(clienteDto);
+
+        ResponseEntity<ClienteDto> response = clienteController.crearCliente(clienteDto);
+
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+        assertEquals("Juan", response.getBody().getNombre());
+        assertEquals("perez",response.getBody().getApellido());
+        assertEquals(LocalDate.of(1998,10,10),response.getBody().getFechaNacimiento());
+        assertEquals("masculino",response.getBody().getGenero());
+        assertFalse(response.getBody().isFumador());
+        assertEquals(1.70,response.getBody().getAltura());
+        assertEquals(75.0,response.getBody().getPeso());
+
+        verify(kafkaProducerService, times(1)).sendMessage(anyString());
+    }
 
     @Test
     void testGetClienteKpi() {
@@ -98,6 +104,19 @@ public class ClienteTest {
         verify(clienteService).getClientList();
     }
 
+    @Test
+    void testCrearClienteError() {
+        when(clienteService.createCliente(any(ClienteDto.class)))
+                .thenThrow(new ServiceException("No puede haber campos null, revise!!", HttpStatus.BAD_REQUEST));
+
+        ServiceException exception = assertThrows(ServiceException.class, () -> {
+            clienteController.crearCliente(clienteDto);
+        });
+
+        assertEquals("No puede haber campos null, revise!!", exception.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getCode());
+        verify(clienteService, times(1)).createCliente(any(ClienteDto.class));
+    }
 
 
 }

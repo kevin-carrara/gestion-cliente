@@ -1,15 +1,15 @@
 
-# TechnicalTestPinApp
+# TechnicalTestPinApp microservicio para la gestión de clientes
 
-url despliegue = 
+url despliegue = https://gestion-cliente.onrender.com
 
-url repo gitHub = 
+url repo gitHub = https://github.com/kevin-carrara/gestion-cliente.git
 
-para levantar swagger [URLENTORNO]/technical-test/swagger-ui/index.html
+para levantar local
 
-configuracion variables de entorno para conexion a DB **DB_USERNAME , DB_PASSWORD, DB_URL, DB_PLATFORM**
-
-
+1. ejecutar el servidor de kafka utilizar **docker compose up -d** ya que no uso proveedor de la nube que gestione kafka como Confluent Cloud o Cloud Karafka seria lo mas optimo
+2. configuracion variables de entorno para conexion a DB **DB_USERNAME , DB_PASSWORD, DB_URL, DB_PLATFORM**
+3. para levantar swagger [localhost:8081]/technical-test/swagger-ui/index.html
 
 ### Mensajería con Kafka
 Implementamos una solución de mensajería basica usando Apache Kafka para garantizar la gestión eficiente de eventos relacionados con el manejo de clientes. 
@@ -31,9 +31,18 @@ Este diseño asegura que el procesamiento intensivo pueda manejarse fuera del fl
 
 ### Integración con Swagger para Documentación
 
-Swagger/OpenAPI fue integrado para facilitar la exploración, prueba y documentación automática de la API. Se configuró seguridad con esquema Bearer Token (JWT), lo cual permite simular flujos protegidos directamente desde el Swagger UI.
+Swagger/OpenAPI fue integrado para facilitar la exploración, prueba y documentación automática de la API
 
 #### Ventajas de Swagger:
 1. **Facilidad de Uso:** Los desarrolladores pueden probar los endpoints directamente desde la interfaz gráfica.
 2. **Documentación Dinámica:** Cada cambio en los controladores refleja automáticamente la documentación.
-3. **Autenticación Segura:** Los desarrolladores pueden autenticarse mediante Bearer Token sin preocuparse por manejar manualmente los encabezados HTTP.
+
+### Pruebas Implementadas
+
+Se desarrollaron múltiples pruebas para validar todas las funcionalidades principales y aspectos técnicos del microservicio:
+
+1. **Unitarias (Controladores):**
+    - **`testCrearCliente`**: Verifica que se pueden crear clientes correctamente y se envían mensajes a Kafka.
+    - **`testGetClienteKpi`**: Valida el cálculo de métricas sobre los clientes registrados.
+    - **`testGetClientList`**: Comprueba que los clientes se listan correctamente con cálculos derivados como fecha estimada de fallecimiento.
+    - **`testCrearClienteError`**: Maneja correctamente excepciones como `ServiceException` durante la creación de clientes.
